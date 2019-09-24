@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Lab02Application",
+            "request": "launch",
+            "mainClass": "psoft.lab02.Lab02Application",
+            "projectName": "lab02"
+        }
+    ]
+}

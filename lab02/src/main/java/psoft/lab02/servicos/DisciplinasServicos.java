@@ -1,29 +1,45 @@
 package psoft.lab02.servicos;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import psoft.lab02.daos.RepositorioDisciplinas;
-import psoft.lab02.daos.RepositorioDisciplinasDTO;
 import psoft.lab02.entidades.Disciplina;
-import psoft.lab02.entidades.DisciplinaDTO;
 
 @Service
 public class DisciplinasServicos {
 
+    @Autowired
     private RepositorioDisciplinas<Disciplina, Long> disciplinasDAO;
-    private RepositorioDisciplinasDTO<Disciplina, Long> disciplinasDTODAO;
 
-    public DisciplinasServicos(RepositorioDisciplinas<Disciplina, Long> disciplinasDAO, RepositorioDisciplinasDTO<Disciplina, Long> disciplinasDTODAO){
-        super();
-        this.disciplinasDAO = disciplinasDAO;
-        this.disciplinasDTODAO = disciplinasDTODAO;
+    public DisciplinasServicos() {}
+
+    @PostConstruct
+    public void initDisciplinas(){
+        ObjectMapper mapper = new ObjectMapper();
+        TypeReference<List<Disciplina>> typeReference = new TypeReference<List<Disciplina>>(){};
+        InputStream inputStream = ObjectMapper.class.getResourceAsStream("/json/disciplinas.json");
+        try {
+            List<Disciplina> disciplinas = mapper.readValue(inputStream, typeReference);
+            this.disciplinasDAO.saveAll(disciplinas);
+            System.out.println("Disciplinas salvas no sistema!");
+        } catch (IOException e) {
+            System.out.println("Nao foi possivel salvar as disciplinas: " + e.getMessage());
+        }
     }
 
-    public List<DisciplinaDTO> retornaDisciplinas(){
-        return this.disciplinasDTODAO.findAll();
+    public List<Disciplina> retornaDisciplinas(){
+        return this.disciplinasDAO.findAll();
     }
 
     public Optional<Disciplina> retornaDisciplina(Long id){

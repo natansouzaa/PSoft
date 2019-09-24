@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import psoft.lab02.entidades.Disciplina;
-import psoft.lab02.entidades.DisciplinaDTO;
 import psoft.lab02.entidades.Usuario;
 import psoft.lab02.servicos.DisciplinasServicos;
 import psoft.lab02.servicos.UsuariosServicos;
@@ -24,6 +23,7 @@ public class UsuariosControlador {
 
     @Autowired
     private UsuariosServicos usuariosServicos;
+    @Autowired
     private DisciplinasServicos disciplinasServicos;
 
     //Adiciona um usuario com email, nome e senha. O email sera o login do usuario e deve ser um identificador unico
@@ -33,13 +33,13 @@ public class UsuariosControlador {
     }
 
     //Retorna um JSON (com campos id, nome) com todas as disciplinas inseridas no sistema
-    @GetMapping("/api/disciplinas")
-    public ResponseEntity<List<DisciplinaDTO>> retornaDisciplinas() {
-        return new ResponseEntity<List<DisciplinaDTO>>(disciplinasServicos.retornaDisciplinas(), HttpStatus.OK);
+    @GetMapping("/disciplinas")
+    public ResponseEntity<List<Disciplina>> retornaDisciplinas() {
+        return new ResponseEntity<List<Disciplina>>(disciplinasServicos.retornaDisciplinas(), HttpStatus.OK);
     }
 
     //Retorna um JSON que representa a disciplina completa (id, nome, nota, likes e comentarios) cujo identificador unico e id
-    @GetMapping("/api/disciplinas/{id}")
+    @GetMapping("/disciplinas/{id}")
     public ResponseEntity<Optional<Disciplina>> retornaDisciplina(@PathVariable("id") Long id){
         if(disciplinasServicos.existeNoBD(id) == false){ // Mudança aqui
             return ResponseEntity.notFound().build();
@@ -48,7 +48,7 @@ public class UsuariosControlador {
         }
     }
 
-    @PutMapping("/api/disciplinas/likes/{id}")
+    @PutMapping("/disciplinas/likes/{id}")
     public ResponseEntity<Optional<Disciplina>> incrementaLikes(@PathVariable("id") Long id){
         if(disciplinasServicos.existeNoBD(id) == false){ // Mudança aqui
             return ResponseEntity.notFound().build();
@@ -57,7 +57,7 @@ public class UsuariosControlador {
         }
     }
 
-    @PutMapping("/api/disciplinas/nota/{id}")
+    @PutMapping("/disciplinas/nota/{id}")
     public ResponseEntity<Optional<Disciplina>> setDisciplina(@PathVariable("id") Long id, @RequestBody double nota){
         if(disciplinasServicos.existeNoBD(id) == false) { // Mudança aqui
             return ResponseEntity.notFound().build();
@@ -65,7 +65,7 @@ public class UsuariosControlador {
         return new ResponseEntity<Optional<Disciplina>>(disciplinasServicos.setDisciplina(id, nota), HttpStatus.OK);
     }
 
-    @PutMapping("/api/disciplinas/comentarios/{id}")
+    @PutMapping("/disciplinas/comentarios/{id}")
     public ResponseEntity<Optional<Disciplina>> setDisciplina(@PathVariable("id") Long id, @RequestBody String comentario){
         if(disciplinasServicos.existeNoBD(id) == false) { // Mudança aqui
             return ResponseEntity.notFound().build();
@@ -73,12 +73,12 @@ public class UsuariosControlador {
         return new ResponseEntity<Optional<Disciplina>>(disciplinasServicos.setDisciplina(id, comentario), HttpStatus.OK);
     }
 
-    @GetMapping("/api/disciplinas/ranking/notas")
+    @GetMapping("/disciplinas/ranking/notas")
     public ResponseEntity<List<Disciplina>> rankingDisciplinasNotas(){
         return new ResponseEntity<List<Disciplina>>(disciplinasServicos.rankingDisciplinasNotas(), HttpStatus.OK);
     }
 
-    @GetMapping("/v1/api/disciplinas/ranking/likes")
+    @GetMapping("/disciplinas/ranking/likes")
     public ResponseEntity<List<Disciplina>> rankingDisciplinas(){
         return new ResponseEntity<List<Disciplina>>(disciplinasServicos.rankingDisciplinasLikes(), HttpStatus.OK);
     }

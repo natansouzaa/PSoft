@@ -8,6 +8,9 @@ import javax.persistence.Id;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
+
+
+
 @Entity
 public class Disciplina {
 
